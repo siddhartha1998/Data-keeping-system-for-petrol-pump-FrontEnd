@@ -1,0 +1,300 @@
+<button
+  type="submit"
+  class="btn btn-success"
+  data-toggle="modal"
+  data-target="#addCustomerModal"
+  style="margin-top: 10px; margin-bottom: 5px; margin-left: 10px"
+>
+  <i class="fa fa-plus" aria-hidden="true"></i>Add Customer
+</button>
+<br />
+
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col" (click)="sort('id')">
+          S.N. <i class="fa fa-sort"></i>
+        </th>
+        <th scope="=col" (click)="sort('name')">
+          CustomerName <i class="fa fa-sort"></i>
+        </th>
+        <th scope="col" (click)="sort('address')">
+          Address <i class="fa fa-sort"></i>
+        </th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="
+          let activeCustomer of customerDetail
+            | orderBy: key:reverse
+            | paginate: { itemsPerPage: 5, currentPage: page }
+        "
+      >
+        <td>{{ activeCustomer.id }}</td>
+        <td>{{ activeCustomer.name }}</td>
+        <td>{{ activeCustomer.address }}</td>
+        <td>
+          <button
+            class="btn btn-danger"
+            mwlConfirmationPopover
+            [popoverTitle]="popoverTitle"
+            [popoverMessage]="popoverMessage"
+            placement="left"
+            (confirm)="deleteCustomer(activeCustomer.id)"
+            (cancel)="cancelClicked = true"
+          >
+            <i class="fa fa-trash"></i></button
+          >|
+          <button
+            (click)="viewClicked(activeCustomer.id)"
+            class="btn btn-secondary"
+            data-toggle="modal"
+            data-target="#editCustomerModal"
+          >
+            <i class="fas fa-edit"></i></button
+          >|
+          <button
+            (click)="viewClicked(activeCustomer.id)"
+            class="btn btn-success"
+            data-toggle="modal"
+            data-target="#viewCustomerModal"
+          >
+            <i class="fas fa-eye"></i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div>
+  <pagination-controls
+    (pageChange)="page = $event"
+    style="display: flex; float: right"
+  ></pagination-controls>
+</div>
+
+<!--Modal start here for add Customer detail-->
+<div
+  class="modal fade"
+  id="addCustomerModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="addCustomerModalCenterTitle"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addCustomerModalLongTitle">
+          Add Customer Detail
+        </h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- Form start here -->
+        <form
+        name="form"  
+        (ngSubmit)="f.form.valid"
+        #f="ngForm"
+        novalidate>
+        
+          <div class="form-group">
+            <label for="inputCustomerName">CustomerName</label>
+            <input
+              type="text"
+              [(ngModel)]="customerName"
+              name="customerName"
+              class="form-control"
+              id="inputCustomerName"
+              #inputCustomerName="ngModel"
+              required
+            />
+
+            <div
+              *ngIf="f.submitted || inputCustomerName.invalid || inputCustomerName.touched "
+            >
+              <div    class="alert alert-danger"
+              role="alert" *ngIf="inputCustomerName.errors?.required">CustomerName is required</div>
+          </div>
+          </div>
+
+          <div class="form-group">
+            <label for="inputAddress">Address</label>
+            <input
+              type="text"
+              [(ngModel)]="customerAddress"
+              name="inputAddress"
+              class="form-control"
+              id="inputAddress"
+              #inputAddress="ngModel"
+              required
+            />
+
+            <div
+              *ngIf="f.submitted || inputAddress.invalid || inputAddress.touched "
+            >
+              <div  class="alert alert-danger"
+              role="alert" *ngIf="inputAddress.errors?.required">CustomerAddress is required</div>  
+            </div>
+
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">
+              Close
+            </button>
+            <button
+              (click)="addCustomer()"
+              type="submit"
+              class="btn btn-success"
+              data-dismiss="modal"
+            >
+              Add
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Modal start here for edit Customer detail-->
+<div
+  class="modal fade"
+  id="editCustomerModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="editCustomerModalCenterTitle"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editCustomerModalLongTitle">
+          Edit Customer Detail
+        </h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- Form start here -->
+        <form>
+          <div class="form-group">
+            <label for="inputCustomerName">CustomerName</label>
+            <input
+              type="text"
+              [(ngModel)]="name"
+              name="customerName"
+              class="form-control"
+              id="inputCustomerName1"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="inputAddress">Address</label>
+            <input
+              type="text"
+              [(ngModel)]="address"
+              name="address"
+              class="form-control"
+              id="inputAddress1"
+            />
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">
+              Close
+            </button>
+            <button
+              (click)="editCustomer(id)"
+              type="submit"
+              class="btn btn-success"
+              data-dismiss="modal"
+            >
+              Edit
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Modal start here for view Customer detail-->
+<div
+  class="modal fade"
+  id="viewCustomerModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="viewCustomerModalCenterTitle"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="viewCustomerModalLongTitle">
+          View Customer Detail
+        </h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- Form start here -->
+        <form>
+          <div class="form-group">
+            <label for="inputCustomerName">CustomerName</label>
+            <input
+              type="text"
+              [(ngModel)]="name"
+              name="customerName"
+              class="form-control"
+              id="inputCustomerName2"
+              readonly
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="inputAddress">Address</label>
+            <input
+              type="text"
+              [(ngModel)]="address"
+              name="address"
+              class="form-control"
+              id="inputAddress2"
+              readonly
+            />
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">
+              Close
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

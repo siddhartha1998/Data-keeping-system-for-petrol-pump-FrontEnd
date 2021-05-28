@@ -1,0 +1,457 @@
+<button type="button" class="btn btn-primary" data-toggle="modal" (click)="getAllCustomers()"
+  data-target="#newSalesRecordModal"
+  style="margin: 10px"
+>
+  <i class="fa fa-plus"></i>New Sales Record</button>
+<br />
+
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col" (click)="sort('id')">S.N. <i class="fa fa-sort"></i></th>
+        <th scope="col" (click)="sort('date')">Date <i class="fa fa-sort"></i></th>
+        <th scope="col" (click)="sort('name')">Customer Name <i class="fa fa-sort"></i></th>
+        <th scope="=col" (click)="sort('itemName')">ItemName <i class="fa fa-sort"></i></th>
+        <th scope="col" (click)="sort('quantity')">Quantity(Liter) <i class="fa fa-sort"></i></th>
+        <th scope="col" (click)="sort('total')">Total(Rs.) <i class="fa fa-sort"></i></th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let sal of salesDetail   | orderBy: key:reverse
+      | paginate: { itemsPerPage: 5, currentPage: page }">
+        <td>{{ sal.id }}</td>
+        <td>{{ sal.date }}</td>
+        <td>{{ sal.customers }}</td>
+        <td>{{ sal.itemName }}</td>
+        <td>{{ sal.quantity }}</td>
+        <td>{{ sal.total }}</td>
+        <td>
+          <button
+            class="btn btn-danger"
+            mwlConfirmationPopover
+            [popoverTitle]="popoverTitle"
+            [popoverMessage]="popoverMessage"
+            placement="left"
+            (confirm)="deleteSales(sal.id)"
+            (cancel)="cancelClicked = true"
+          >
+            <i class="fa fa-trash"></i></button>|
+          
+          <button  (click)="viewSalesById(sal.id)" class="btn btn-secondary"
+            data-toggle="modal"
+            data-target="#editSalesDetailModal"
+          >
+            <i class="fas fa-edit"></i></button>|
+          
+          <button (click)="viewSalesById(sal.id)" class="btn btn-success"
+            data-toggle="modal"
+            data-target="#viewSalesDetailModal"
+          >
+            <i class="fas fa-eye"></i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div>
+  <pagination-controls
+    (pageChange)="page = $event"
+    style="display: flex; float: right"
+  ></pagination-controls>
+</div>
+
+<!-- Add sales record-->
+<div
+  class="modal fade"
+  id="newSalesRecordModal"
+  tabindex="-1"
+  aria-labelledby="newSalesRecordModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="newSalesRecordModalLabel">
+          New Sales Record
+        </h5>
+        <button type="button" class="btn-close" data-dismiss="modal"
+          aria-label="Close"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <form
+      name="form"  
+      (ngSubmit)="f.form.valid"
+      #f="ngForm"
+      novalidate>
+
+      <div class="modal-body">
+        <div class="container" style="width: 18rem">
+          <p><strong>Select Customer</strong></p>
+          <select (change)="changeCustomerHandler($event)" class="form-control">
+            <option selected>--select--</option>
+            <option
+              *ngFor="let customer of customerDetail"
+              value="{{ customer.id }}"
+            >
+              {{ customer.name }}
+            </option>
+            >
+          </select>
+        </div>
+        <br />
+
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <p><strong>Select current Date</strong></p>
+        <input
+        class="form-control"
+          type="date"
+          id="date"
+          [(ngModel)]="date"
+          name="date"
+        />
+      </div>
+
+          <div class="form-group col-md-6">
+            <p><strong>Select current Time</strong></p>
+        <input
+        class="form-control"
+          type="time"
+          id="time"
+          [(ngModel)]="time"
+          name="time"
+        /> 
+          </div>
+        </div>
+      <br>
+
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label>Items Name</label>
+            <select class="form-control" (change)="changeItemHandler($event)">
+              <option>--select item--</option>
+              <option value="Diesel">Diesel</option>
+              <option value="Petrol">Petrol</option>
+            </select>
+            </div>
+
+            <div class="form-group col-md-6">
+              <label>Quantity(Ltr)</label>
+              <input
+                type="text"
+                [(ngModel)]="quantityFromAdd"
+                name="inputQuantity"
+                class="form-control"
+                id="inputQuantity"
+                #inputQuantity="ngModel"
+                (ngModelChange)="calculate()"
+                pattern="^[0-9]{1,3}$"
+                required
+              />
+
+              <div
+             
+              *ngIf="f.submitted || inputQuantity.invalid || inputQuantity.touched "
+            >
+              <div  class="alert alert-danger"
+              role="alert" *ngIf="inputQuantity.errors?.required">Quantity is required</div>
+              <div  class="alert alert-danger"
+              role="alert" *ngIf="inputQuantity.errors?.pattern"  >
+                Quantity must be digit pattern  </div>
+            </div>
+
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="inputRate">Rate</label>
+              <input
+                type="text"
+                [(ngModel)]="rateFromAdd"
+                name="rate"
+                class="form-control"
+                id="inputRate"
+                #inputRate="ngModel"
+                (ngModelChange)="calculate()"
+                pattern="^[0-9]{1,4}$"
+                required
+              />
+
+              <div
+             
+              *ngIf="f.submitted || inputRate.invalid || inputRate.touched "
+            >
+              <div   class="alert alert-danger"
+              role="alert" *ngIf="inputRate.errors?.required">Rate is required</div>
+              <div   class="alert alert-danger"
+              role="alert" *ngIf="inputRate.errors?.pattern"  >
+                Rate must be digit pattern (eg:10)  </div>
+            </div>
+
+            </div>
+
+            <div class="form-group col-md-4">
+              <label for="inputTotal">Total</label>
+              <input
+                type="text"
+                [(ngModel)]="totalSum"
+                name="total"
+                class="form-control"
+                id="inputTotal"
+                readonly
+              />
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="inputRemarks">Remarks</label>
+            <textarea
+              [(ngModel)]="remarks"
+              class="form-control"
+              id="remarks"
+            ></textarea>
+          </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="createSales()" data-dismiss="modal">Submit</button>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+
+<!-- view sales detail modal-->
+<div
+  class="modal fade"
+  id="viewSalesDetailModal"
+  tabindex="-1"
+  aria-labelledby="viewSalesDetailModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="viewSalesdetailModalLabel">
+          View Sales Detail
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="inputdate">Date</label>
+            <input
+              type="datetime"
+              [(ngModel)]="date"
+              name="date"
+              class="form-control"
+              id="inputDate1"
+              readonly
+            />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="inputItemName">itemName</label>
+              <input
+                type="text"
+                [(ngModel)]="itemName"
+                name="itemName"
+                class="form-control"
+                id="inputItemName1"
+                readonly
+              />
+            </div>
+
+            <div class="form-group col-md-6">
+              <label for="inputQuantity">Quantity(Ltr)</label>
+              <input
+                type="text"
+                [(ngModel)]="quantity"
+                name="quantity"
+                class="form-control"
+                id="inputQuantity1"
+                readonly
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="inputRate">Rate</label>
+              <input
+                type="text"
+                [(ngModel)]="rate"
+                name="rate"
+                class="form-control"
+                id="inputRate1"
+                readonly
+              />
+            </div>
+
+            <div class="form-group col-md-4">
+              <label for="inputTotal">Total</label>
+              <input
+                type="text"
+                [(ngModel)]="total"
+                name="total"
+                class="form-control"
+                id="inputTotal1"
+                readonly
+              />
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="inputRemarks">Remarks</label>
+            <textarea class="form-control" id="remarks1" readonly>{{
+              remarks
+            }}</textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- edit sales detail modal-->
+<div
+  class="modal fade"
+  id="editSalesDetailModal"
+  tabindex="-1"
+  aria-labelledby="editSalesDetailModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="veditSalesdetailModalLabel">
+          edit Sales Detail
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="inputdate">Date</label>
+            <input
+              type="datetime"
+              [(ngModel)]="date"
+              name="date"
+              class="form-control"
+              id="inputDate2"
+              readonly
+            />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <!-- <label for="inputItemName">itemName</label>
+              <input
+                type="text"
+                [(ngModel)]="itemName"
+                name="itemName"
+                class="form-control"
+                id="inputItemName2" -->
+                <label>Items Name</label>
+                <select class="form-control" (change)="changeItemHandler($event)">
+                  <option>--select item--</option>
+                  <option value="Diesel">Diesel</option>
+                  <option value="Petrol">Petrol</option>
+                </select>
+              
+            </div>
+
+            <div class="form-group col-md-6">
+              <label for="inputQuantity">Quantity(Ltr)</label>
+              <input
+                type="text"
+                [(ngModel)]="quantityFromAdd"
+                name="quantity"
+                class="form-control"
+                id="inputQuantity2"
+                (ngModelChange)="calculate()"
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="inputRate">Rate</label>
+              <input
+                type="text"
+                [(ngModel)]="rateFromAdd"
+                name="rate"
+                class="form-control"
+                id="inputRate2"
+                (ngModelChange)="calculate()"
+              />
+            </div>
+
+            <div class="form-group col-md-4">
+              <label for="inputTotal">Total</label>
+              <input
+                type="text"
+                [(ngModel)]="totalSum"
+                name="total"
+                class="form-control"
+                id="inputTotal2"
+                (ngModelChange)="calculate()"
+                readonly
+              />
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="inputRemarks">Remarks</label>
+            <textarea
+              class="form-control"
+              name="remarks"
+              [(ngModel)]="remarks"
+            ></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Close
+        </button>
+        <button
+          (click)="editSales(id)"
+          type="button"
+          class="btn btn-success"
+          data-dismiss="modal"
+        >
+          Edit
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

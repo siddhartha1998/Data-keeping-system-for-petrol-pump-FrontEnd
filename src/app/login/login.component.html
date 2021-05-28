@@ -1,0 +1,98 @@
+<!-- <div class="container" >
+    <label>Username</label>
+    <input [(ngModel)]="user.username" type="text"  class="form-control">
+
+<label>Password</label>
+ <input [(ngModel)]="user.password" type="password" class="form-control">
+
+<input type="button" value="Login" (click)="Login()"  class="btn btn-primary" style="margin: 10px;" /><br>
+</div> -->
+
+<div class="container-fluid ">
+    <div class="row justify-content-center align-items-center" >
+        <div class="col col-sm-6 col-md-6 col-lg-4 col-xl-3 h-auto" style="background-color: rgb(204, 200, 200);">
+  
+        <label style="text-align: center; margin-left: 70px; color: rgb(135, 97, 241);"><b>Application Login</b> </label>
+        <br>
+        <form 
+        name="form"  
+          (ngSubmit)="f.form.valid && Login()"
+          #f="ngForm"
+          novalidate
+        >
+           <div class="form-group">
+            <label for="username" >Username <i class="fas fa-user"></i></label>
+            <input
+              type="text"
+              class="form-control"
+              name="username"
+              id="username"
+              #username="ngModel"
+              [(ngModel)]="user.username"
+              required
+            />
+            <div   *ngIf="f.submitted && username.invalid">
+
+              <div
+              class="alert alert-danger"
+              role="alert"
+              *ngIf="username.errors?.required"
+            >
+              Username is required!
+            </div>
+            </div>
+           
+          </div> 
+          
+  
+          <div class="form-group">
+            <label for="password">Password <i class="fas fa-lock"></i></label>
+            <input
+              type="password"
+              class="form-control"
+              name="password"
+              id="password"
+              [(ngModel)]="user.password"
+              #password="ngModel"
+              required
+              minlength="5"
+              maxlength="5"
+            />
+            
+            <div
+              class="alert alert-danger"
+              role="alert"
+              *ngIf="f.submitted && password.invalid "
+            >
+              <div *ngIf="password.errors?.required">Password is required</div>
+              <div *ngIf="password.errors?.minlength || password.errors?.maxlength" >
+                Password must be of 5 characters
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <button type="submit"  class="btn btn-primary btn-block" >Login</button><br>
+          </div>
+          <div class="form-group">
+            <div
+              class="alert alert-danger"
+              role="alert"
+              *ngIf="f.submitted && isLoginFailed"
+            >
+              Login failed: {{ errorMessage }}
+            </div>
+  
+          
+          </div>
+        </form>
+    
+        <div class="alert alert-success" *ngIf="isLoggedIn">
+          Login Successful.
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+
