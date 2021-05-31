@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { CommonService } from '../_service/commonService';
 
 
 @Component({
@@ -25,11 +26,14 @@ export class CustomerComponent implements OnInit {
 
   constructor( private router : Router,
                       private http : HttpClient,
-                      private snackBar : MatSnackBar
+                      private snackBar : MatSnackBar,
+                      private commonService : CommonService
+
                      ) { }
 
   ngOnInit(): void {
     this.viewCustomer();
+    this.commonService.isLoggedIn=true;
   }
 
  key:string='id';
@@ -48,6 +52,7 @@ export class CustomerComponent implements OnInit {
       },
       err=>{
         console.log(err);
+        
         
       }
     );
@@ -126,7 +131,14 @@ err=>{
   deleteCustomer(id:number){
     this.http.delete("https://localhost:5001/api/Customer/"+id,{responseType:'json'}).subscribe(
       res=>{
-        console.log(res);
+        this.snackBar.open("Customer Deleted Successfully!", 'Dismiss', {
+          duration: 4000,
+          verticalPosition: 'bottom',
+          horizontalPosition: 'right',
+          panelClass: ['red-snackBar'],
+    
+        });
+
         this.ngOnInit();
         
       },

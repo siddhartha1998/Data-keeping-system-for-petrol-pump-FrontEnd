@@ -17,6 +17,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { Ng2OrderModule } from 'ng2-order-pipe';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { AuthGuard } from './_service/AuthGuard';
 
 
 
@@ -40,11 +41,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     Ng2OrderModule,
     MatSnackBarModule,
 
-    
-
-    
-    
-    
+  
 
     //for delete confirmation
 ConfirmationPopoverModule.forRoot({​​​​​
@@ -54,7 +51,7 @@ ConfirmationPopoverModule.forRoot({​​​​​
     BrowserAnimationsModule,
 
   ],
-  providers: [CommonService],
+  providers: [AuthGuard,CommonService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

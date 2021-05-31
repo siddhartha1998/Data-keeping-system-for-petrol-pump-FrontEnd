@@ -83,9 +83,7 @@ this.reverse= !(this.reverse);
   viewSalesById(id:number){
     this.http.get("https://localhost:5001/api/Sales/" +id, {responseType:'json'}).subscribe(
       (res:any)=>{
-        // this.salesDetail=res;
-        // console.log(res);
-        // console.log(res.id);
+       
         this.id=res.id;
         this.date=res.date;
         this.itemName=res.itemName;

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonService } from '../_service/commonService';
+
 
 @Component({
   selector: 'app-homepage',
@@ -8,18 +8,10 @@ import { CommonService } from '../_service/commonService';
 })
 export class HomepageComponent implements OnInit {
 
-  constructor(private commonService : CommonService) { }
+  constructor() { }
   ngOnInit(): void {
     
-    this.commonService.isLoggedIn=false
   }
-  openNav() {
-    document.getElementById("mySidenav").style.width = "250px";
-  }
-  closeNav() {
-    document.getElementById("mySidenav").style.width = "0";
-  }
-
  
 
 

@@ -14,10 +14,7 @@ export class AppComponent implements OnInit{
 isLoggedIn:Boolean= false;
   ngOnInit(){
 
-  // if(this.commonService.value !=null){
-  //   this.isLoggedIn = true;
-  // }
-
+ 
   if(window.location.href == "http://localhost:4200/login" || window.location.href== "http://localhost:4200/" ){
     this.isLoggedIn = false;
   }else{

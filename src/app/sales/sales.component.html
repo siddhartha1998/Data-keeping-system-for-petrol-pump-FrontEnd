@@ -131,15 +131,29 @@
         </div>
       <br>
 
-          <div class="form-row">
-            <div class="form-group col-md-6">
-              <label>Items Name</label>
-            <select class="form-control" (change)="changeItemHandler($event)">
+            <!-- <select class="form-control" (change)="changeItemHandler($event)">
               <option>--select item--</option>
               <option value="Diesel">Diesel</option>
               <option value="Petrol">Petrol</option>
-            </select>
+            </select> -->
+
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label>Items Name</label>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="itemName"  value="Diesel"
+                id="radioForDiesel" (change)=changeItemHandler($event)>
+                <label >Diesel</label>
+              </div>
+  
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="itemName" value="Petrol"
+                 id="radioForPetrol" (change)=changeItemHandler($event) checked>
+                <label > Petrol</label>
+              </div>
+
             </div>
+
 
             <div class="form-group col-md-6">
               <label>Quantity(Ltr)</label>
@@ -151,19 +165,14 @@
                 id="inputQuantity"
                 #inputQuantity="ngModel"
                 (ngModelChange)="calculate()"
-                pattern="^[0-9]{1,3}$"
+              
                 required
               />
 
-              <div
-             
-              *ngIf="f.submitted || inputQuantity.invalid || inputQuantity.touched "
-            >
+              <div *ngIf="f.submitted || inputQuantity.invalid || inputQuantity.touched ">
+                 
               <div  class="alert alert-danger"
               role="alert" *ngIf="inputQuantity.errors?.required">Quantity is required</div>
-              <div  class="alert alert-danger"
-              role="alert" *ngIf="inputQuantity.errors?.pattern"  >
-                Quantity must be digit pattern  </div>
             </div>
 
             </div>
@@ -213,9 +222,12 @@
           <div class="mb-3">
             <label for="inputRemarks">Remarks</label>
             <textarea
+            name ="remarks"
               [(ngModel)]="remarks"
               class="form-control"
               id="remarks"
+              cols="25"
+              rows="5"
             ></textarea>
           </div>
 
@@ -317,11 +329,11 @@
             </div>
           </div>
 
-          <div class="mb-3">
+          <div class="formGroup">
             <label for="inputRemarks">Remarks</label>
-            <textarea class="form-control" id="remarks1" readonly>{{
-              remarks
-            }}</textarea>
+            <textarea class="form-control" id="remarks1" name="remarks" [(ngModel)]="remarks" cols="25" rows="5" readonly >
+              <!-- {{remarks}} -->
+          </textarea>
           </div>
         </form>
       </div>

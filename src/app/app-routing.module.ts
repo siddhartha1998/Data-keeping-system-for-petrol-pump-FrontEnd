@@ -7,15 +7,16 @@ import { CustomerComponent } from './customer/customer.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { LoginComponent } from './login/login.component';
 import { SalesComponent } from './sales/sales.component';
+import { AuthGuard } from './_service/AuthGuard';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full'},
-  {path:'login',component : LoginComponent},
-  { path:'homepage', component : HomepageComponent},
-  { path:'customer',component : CustomerComponent},
-  {path:'sales',component : SalesComponent},
-  {path:'aboutUs',component : AboutUsComponent},
-  {path:'contactUs',component : ContactUsComponent},
+  {path:'login',component : LoginComponent, },
+  { path:'homepage', component : HomepageComponent,canActivate:[AuthGuard]},
+  { path:'customer',component : CustomerComponent,canActivate:[AuthGuard]},
+  {path:'sales',component : SalesComponent,canActivate:[AuthGuard]},
+  {path:'aboutUs',component : AboutUsComponent,canActivate:[AuthGuard]},
+  {path:'contactUs',component : ContactUsComponent,canActivate:[AuthGuard]},
 ];
 
 @NgModule({

@@ -27,7 +27,7 @@ export class LoginComponent implements OnInit {
 
   Login(){
       if(this.user.username=="admin" && this.user.password=="admin" ){
-        
+        this.commonService.token ="someValue";
         window.location.replace("/homepage");
         // this.router.navigate(['/homepage']);
        // window.location.reload();

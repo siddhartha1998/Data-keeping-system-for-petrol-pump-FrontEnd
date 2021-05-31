@@ -30,7 +30,7 @@
         *ngFor="
           let activeCustomer of customerDetail
             | orderBy: key:reverse
-            | paginate: { itemsPerPage: 5, currentPage: page }
+            | paginate: { itemsPerPage: 7, currentPage: page }
         "
       >
         <td>{{ activeCustomer.id }}</td>
